@@ -1,11 +1,13 @@
 <script setup></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <nav class="flex justify-between w-[90vw] mx-auto py-3 items-center">
+    <h3>ajs weather</h3>
+    <div>
+      <input class="w-76" type="text" placeholder="enter the full name of a city eg. 'amman'" />
+      <button>Search</button>
+    </div>
+  </nav>
 </template>
 
 <style scoped></style>
