@@ -9,7 +9,7 @@ async function GetDataFromServer(name) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query: name.toLowerCase() }),
+      body: JSON.stringify({ query: name.toLowerCase().split(" ").join("-") }),
     })
       .then((res) => res.json())
       .then((d) => (results.value = d));
@@ -23,7 +23,7 @@ const query = ref("");
 </script>
 
 <template>
-  <nav class="flex justify-between w-[90vw] mx-auto py-3 items-center backdrop-blur-md">
+  <nav class="flex sticky top-0 justify-between mx-auto py-3 items-center backdrop-blur-md">
     <h3 class="font-bold text-2xl text-white">ajs weather</h3>
     <div>
       <input
@@ -50,6 +50,7 @@ const query = ref("");
         :date="condition.day"
         :weather="condition.weather"
         :summary="condition.summary"
+        :icon="condition.icon"
       ></DayBox>
     </section>
   </main>
