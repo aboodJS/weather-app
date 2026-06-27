@@ -23,20 +23,28 @@ const query = ref("");
 </script>
 
 <template>
-  <nav class="flex justify-between w-[90vw] mx-auto py-3 items-center">
-    <h3>ajs weather</h3>
+  <nav class="flex justify-between w-[90vw] mx-auto py-3 items-center backdrop-blur-md">
+    <h3 class="font-bold text-2xl text-white">ajs weather</h3>
     <div>
       <input
         v-model="query"
-        class="w-76"
+        class="w-76 bg-slate-300 rounded-l"
         type="text"
         placeholder="enter the full name of a city eg. 'amman'"
       />
-      <button @click="() => GetDataFromServer(query)">Search</button>
+      <button
+        class="text-white font-bold bg-black px-3 rounded-r cursor-pointer hover:bg-white hover:text-black transition-colors"
+        @click="() => GetDataFromServer(query)"
+      >
+        Search
+      </button>
     </div>
   </nav>
   <main>
-    <section class="flex gap-6 justify-evenly items-center h-screen" v-if="results !== undefined">
+    <section
+      class="grid grid-cols-4 grid-rows-2 gap-2 justify-center content-center h-screen"
+      v-if="results !== undefined"
+    >
       <DayBox
         v-for="condition in results.daily.data"
         :date="condition.day"
