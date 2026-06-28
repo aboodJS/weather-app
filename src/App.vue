@@ -53,6 +53,7 @@ const query = ref("");
         :weather="condition.weather"
         :summary="condition.summary"
         :icon="condition.icon"
+        :full-data="condition"
       ></DayBox>
     </section>
   </main>
