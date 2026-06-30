@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import DayBox from "./components/DayBox.vue";
 
+/* TODO: make the function detect and return errors properly  */
 async function GetDataFromServer(name) {
   await fetch("http://localhost:3000", {
     method: "POST",
@@ -9,19 +10,7 @@ async function GetDataFromServer(name) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ query: name.toLowerCase().split(" ").join("-") }),
-  })
-    .then((res) => {
-      console.log(res.status);
-      return res.json();
-    })
-    .then((d) => {
-      results.value = d;
-      isError.value = false;
-    })
-    .catch((e) => {
-      isError.value = true;
-      results.value = e;
-    });
+  });
 }
 const results = ref();
 const query = ref("");
