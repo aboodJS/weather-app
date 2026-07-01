@@ -12,7 +12,13 @@ app.post("/", async (req, res) => {
 
   const data = await fetch(
     `https://www.meteosource.com/api/v1/free/point?place_id=${req.body.query}&sections=daily&key=${process.env.API_KEY}`,
-  );
+  ).then((j) => {
+    if (j.ok) {
+      return j.json();
+    } else {
+      res.json({ msg: "sorry something went wrong" });
+    }
+  });
 });
 
 app.listen(3000, () => {
