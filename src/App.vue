@@ -10,12 +10,32 @@ async function GetDataFromServer(name) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ query: name.toLowerCase().split(" ").join("-") }),
-  });
+  })
+    .then((j) => {
+      return j.json();
+    })
+    .then((r) => {
+      console.log(r);
+      if (r.code === undefined) {
+        isError.value = false;
+        results.value = r;
+      } else {
+        isError.value = true;
+        switch (r.code) {
+          case 400:
+            r.text = "the place you searched for doesn't exist";
+            break;
+
+          default:
+            break;
+        }
+        results.value = r;
+      }
+    });
 }
 const results = ref();
 const query = ref("");
 const isError = ref(false);
-const erroVal = ref();
 </script>
 
 <template>
@@ -52,7 +72,12 @@ const erroVal = ref();
         :full-data="condition"
       ></DayBox>
     </section>
-    <section v-else-if="results !== undefined && isError === true">{{ results }}</section>
+    <section class="grid content-center" v-else-if="results !== undefined && isError === true">
+      <div class="text-white text-center">
+        <h1 class="text-8xl font-bold">{{ results.code }}</h1>
+        <p class="text-2xl">{{ results.text }}</p>
+      </div>
+    </section>
   </main>
 </template>
 
