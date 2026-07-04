@@ -25,6 +25,9 @@ async function GetDataFromServer(name) {
           case 400:
             r.text = "the place you searched for doesn't exist";
             break;
+          case 500:
+            r.text = "sorry, there was a problem on our end, please try again later";
+            break;
 
           default:
             break;
