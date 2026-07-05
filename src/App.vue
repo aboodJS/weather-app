@@ -2,24 +2,52 @@
 import { ref } from "vue";
 import DayBox from "./components/DayBox.vue";
 
+/* TODO: make the function detect and return errors properly  */
 async function GetDataFromServer(name) {
-  try {
-    await fetch("http://localhost:3000", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: name.toLowerCase().split(" ").join("-") }),
+  await fetch("http://localhost:3000", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query: name.toLowerCase().split(" ").join("-") }),
+  })
+    .then((j) => {
+      return j.json();
     })
-      .then((res) => res.json())
-      .then((d) => (results.value = d));
-  } catch (error) {
-    console.log(error);
-  }
-  console.log(query.value);
+    .then((r) => {
+      console.log(r);
+      if (r.code === undefined) {
+        isError.value = false;
+        results.value = r;
+      } else {
+        isError.value = true;
+        switch (r.code) {
+          case 400:
+            r.text = "the place you searched for doesn't exist";
+            break;
+          case 402:
+            r.text = "request limit reached, please try again at a later date";
+            break;
+
+          case 422:
+            r.text = "we couldn't validate the request, please try again";
+            break;
+
+          case 429:
+            r.text = "too many requests in a short time, please try again later";
+            break;
+
+          default:
+            r.text = "sorry, something's wrong on our end, please try again later";
+            break;
+        }
+        results.value = r;
+      }
+    });
 }
 const results = ref();
 const query = ref("");
+const isError = ref(false);
 </script>
 
 <template>
@@ -45,7 +73,7 @@ const query = ref("");
   <main>
     <section
       class="grid grid-cols-4 grid-rows-2 gap-2 justify-center content-center h-screen max-md:grid-rows-3 max-md:grid-cols-3 max-md:gap-4"
-      v-if="results !== undefined"
+      v-if="isError === false && results !== undefined"
     >
       <DayBox
         v-for="condition in results.daily.data"
@@ -55,6 +83,12 @@ const query = ref("");
         :icon="condition.icon"
         :full-data="condition"
       ></DayBox>
+    </section>
+    <section class="grid content-center" v-else-if="results !== undefined && isError === true">
+      <div class="text-white text-center">
+        <h1 class="text-8xl font-bold">{{ results.code }}</h1>
+        <p class="text-2xl">{{ results.text }}</p>
+      </div>
     </section>
   </main>
 </template>
