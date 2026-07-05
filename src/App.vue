@@ -25,11 +25,20 @@ async function GetDataFromServer(name) {
           case 400:
             r.text = "the place you searched for doesn't exist";
             break;
-          case 500:
-            r.text = "sorry, there was a problem on our end, please try again later";
+          case 402:
+            r.text = "request limit reached, please try again at a later date";
+            break;
+
+          case 422:
+            r.text = "we couldn't validate the request, please try again";
+            break;
+
+          case 429:
+            r.text = "too many requests in a short time, please try again later";
             break;
 
           default:
+            r.text = "sorry, something's wrong on our end, please try again later";
             break;
         }
         results.value = r;
