@@ -12,12 +12,15 @@ async function GetDataFromServer(name) {
     body: JSON.stringify({ query: name.toLowerCase().split(" ").join("-") }),
   })
     .then((j) => {
+      loading.value = true;
+      results.value = undefined;
       return j.json();
     })
     .then((r) => {
       console.log(r);
       if (r.code === undefined) {
         isError.value = false;
+        loading.value = false;
         results.value = r;
       } else {
         isError.value = true;
@@ -42,11 +45,13 @@ async function GetDataFromServer(name) {
             break;
         }
         results.value = r;
+        loading.value = false;
       }
     });
 }
 const results = ref();
 const query = ref("");
+const loading = ref(false);
 const isError = ref(false);
 </script>
 
@@ -70,7 +75,11 @@ const isError = ref(false);
       </button>
     </div>
   </nav>
-  <main>
+  <main class="grid">
+    <p
+      v-show="loading"
+      class="h-24 w-24 rounded-full border-8 border-blue-600 border-r-transparent animate-spin justify-self-center self-center relative"
+    ></p>
     <section
       class="grid grid-cols-4 grid-rows-2 gap-2 justify-center content-center h-screen max-md:grid-rows-3 max-md:grid-cols-3 max-md:gap-4"
       v-if="isError === false && results !== undefined"
